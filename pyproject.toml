@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "nicegui-pydantic"
+name = "nicepydantic"
 dynamic = ["version"]
 description = "NiceGUI components for Pydantic models"
 readme = "README.md"
@@ -34,7 +34,7 @@ source = "vcs"
 include = ["/src"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nicegui_pydantic"]
+packages = ["src/nicepydantic"]
 
 [tool.black]
 line-length = 88
