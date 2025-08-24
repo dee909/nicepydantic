@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nicepydantic"
+dynamic = ["version"]
+description = "NiceGUI components for Pydantic models"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "Jules", email = "jules@example.com" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+dependencies = [
+    "nicegui",
+    "pydantic",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "mypy",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+include = ["/src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nicepydantic"]
+
+[tool.black]
+line-length = 88
+
+[tool.mypy]
+strict = true
