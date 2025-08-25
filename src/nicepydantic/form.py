@@ -6,7 +6,7 @@ from nicegui import ui
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 
-from .factory import default_field_factory
+from .factory import default_field_factory, FieldUI
 
 
 class PydanticForm(ui.column):
@@ -19,21 +19,20 @@ class PydanticForm(ui.column):
         self.value = value
         self._field_factory = field_factory or default_field_factory
 
-        with self:
-            self._build()
+        self._field_uis: dict[str, FieldUI] = {}
+        self._build()
+
+    def clear(self) -> None:
+        for n, f in self._field_uis.items():
+            f.form_clearing()
+        return super().clear()
 
     def _build(self) -> None:
-        for name, field in self.value.model_fields.items():
-            if isinstance(field.json_schema_extra, dict) and "gui" in field.json_schema_extra:
-                self.build_field(field)
-            else:
-                self._field_factory(field)
-
-    def build_field(self, field: FieldInfo) -> ui.element:
-        return cast(ui.element, ui.label(field.title or ""))
-
-    def __getattr__(self, name: str) -> Any:
-        try:
-            return super().__getattribute__(name)
-        except AttributeError:
-            return getattr(self.value, name)
+        self.clear()
+        with self:
+            with ui.grid(columns=2):
+                for name, field in type(self.value).model_fields.items():
+                    field_ui = self._field_factory(form=self, name=name, field=field)
+                    self._field_uis[name] = field_ui
+                    field_ui.render_label()
+                    field_ui.render_value(getattr(self.value, name))
